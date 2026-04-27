@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhyGc6wFCLRxBvvvx8paLOPUI4qfYaqct0Nzp2XGtU3XZBMJgdzCT3agmmqVLU8QXr/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqd60h1UfoLmfFaXx71SZVIoeUQ-B3o7Nfr7-sji9luS7aBW3Pu1mzYxipwjy2ahZg/exec';
   try {
     const body = req.body;
     const params = new URLSearchParams({
