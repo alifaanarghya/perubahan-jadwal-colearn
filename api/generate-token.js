@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { hp, agent_name } = req.query;
   if (!hp) return res.status(400).json({ status: 'error', message: 'hp required' });
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqd60h1UfoLmfFaXx71SZVIoeUQ-B3o7Nfr7-sji9luS7aBW3Pu1mzYxipwjy2ahZg/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_QAn5zXa3IoH6IcNtdGV6h9s3JUY1sol1MARUL9WzT9JBIk8mHUvodKepwSgBEBXl/exec';
   try {
     const url = `${APPS_SCRIPT_URL}?action=generate_token&hp=${encodeURIComponent(hp)}&agent_name=${encodeURIComponent(agent_name || '')}`;
     const response = await fetch(url, { redirect: 'follow' });
