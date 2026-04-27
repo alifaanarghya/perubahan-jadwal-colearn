@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent — Generate Link Ubah Jadwal · CoLearn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #2563EB; --blue-dark: #1D4ED8; --blue-light: #EFF6FF; --blue-mid: #DBEAFE;
+      --orange: #F97316; --green: #16A34A; --green-light: #F0FDF4;
+      --red: #EF4444; --red-light: #FEF2F2;
+      --gray-50: #F8FAFC; --gray-100: #F1F5F9; --gray-200: #E2E8F0;
+      --gray-400: #94A3B8; --gray-500: #64748B; --gray-700: #334155; --gray-900: #0F172A;
+      --radius: 12px; --shadow: 0 4px 24px rgba(37,99,235,0.08);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: #ffffff; min-height: 100vh; color: var(--gray-900); }
+    header {
+      background: white; border-bottom: 1px solid var(--gray-200);
+      padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .badge-agent { margin-left: 8px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.5px; }
+    .container { max-width: 560px; margin: 0 auto; padding: 40px 20px 80px; }
+    .page-badge { display: inline-flex; align-items: center; gap: 6px; background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 100px; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .page-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; font-weight: 800; color: var(--gray-900); letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.3; }
+    .page-desc { color: var(--gray-500); font-size: 14px; line-height: 1.6; margin-bottom: 32px; }
+    .card { background: white; border-radius: 18px; padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--gray-200); margin-bottom: 16px; }
+    .card-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ''; width: 3px; height: 16px; background: var(--orange); border-radius: 2px; display: block; }
+    label { display: block; font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .input-wrap { display: flex; align-items: center; }
+    .input-prefix { padding: 13px 14px; background: var(--gray-100); border: 1.5px solid var(--gray-200); border-right: none; border-radius: var(--radius) 0 0 var(--radius); font-weight: 700; color: var(--gray-700); font-size: 15px; }
+    input[type="tel"] { flex: 1; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: 0 var(--radius) var(--radius) 0; font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--gray-900); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="tel"]:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .btn-lookup { width: 100%; margin-top: 14px; padding: 14px; background: var(--blue); color: white; border: none; border-radius: var(--radius); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-lookup:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .btn-lookup:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+    .murid-card { display: none; background: var(--blue-light); border: 1.5px solid var(--blue-mid); border-radius: var(--radius); padding: 18px 20px; margin-top: 16px; }
+    .murid-card.show { display: block; }
+    .murid-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: var(--blue-dark); margin-bottom: 4px; }
+    .murid-meta { font-size: 13px; color: var(--blue); font-weight: 500; }
+    .not-found { display: none; background: var(--red-light); border: 1.5px solid #FECACA; border-radius: var(--radius); padding: 14px 16px; color: var(--red); font-size: 14px; font-weight: 500; margin-top: 16px; text-align: center; }
+    .not-found.show { display: block; }
+    .btn-generate { width: 100%; padding: 16px; background: linear-gradient(135deg, #16A34A, #15803D); color: white; border: none; border-radius: var(--radius); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(22,163,74,0.3); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; }
+    .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.4); }
+    .btn-generate:disabled { background: var(--gray-400); box-shadow: none; cursor: not-allowed; transform: none; }
+    .result-box { display: none; margin-top: 20px; background: var(--green-light); border: 1.5px solid #86EFAC; border-radius: var(--radius); padding: 20px; }
+    .result-box.show { display: block; }
+    .result-label { font-size: 12px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .link-display { background: white; border: 1.5px solid #86EFAC; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--green); font-family: monospace; word-break: break-all; margin-bottom: 12px; }
+    .btn-row { display: flex; gap: 10px; }
+    .btn-copy { flex: 1; padding: 11px; background: var(--green); color: white; border: none; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-copy:hover { background: #15803D; }
+    .btn-wa-send { flex: 1; padding: 11px; background: #25D366; color: white; border: none; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+    .btn-wa-send:hover { background: #128C7E; }
+    .btn-reset { width: 100%; margin-top: 12px; padding: 11px; background: transparent; color: var(--gray-500); border: 1.5px solid var(--gray-200); border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-reset:hover { border-color: var(--gray-400); color: var(--gray-700); }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg { color: var(--red); font-size: 12px; margin-top: 6px; font-weight: 500; display: none; }
+    .expiry-note { font-size: 12px; color: var(--green); margin-top: 8px; text-align: center; font-weight: 500; }
+  </style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJIAAAAcCAYAAACKweYmAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAZFElEQVR42u16eZhV1ZXvb629z7lTzVBFTVQhlIIgKBaCtmiBA6AGIerFIbbD6zTmJWm1fT5jkn4WF312p9NJbDWJremObdSOXKNxFqMNt33OFEYQBEGgiqmqgCqGqrrDOXuv/uPcKotJhZCv895zf9/57v3q1tl7rbV/ew2/tQn/r4/mZkYiYcub7m+IlM9ZC7eMIZ6IkCgdYtW38ZxPnjpxCeKikCSDL8dRDf3/j6ohQLkQdkFCgBCEXUCHv0TBl0A6wiECEhn4JBEA/pcoOAaDvzTBl+NLIH05/m8CUjOjWYIHQn/genSM5/uviI+E5rwOaOZAp2Mxp/yR7ZJf46jmHiTfEb3f3MxoEn1oGxHQJBrNzV/cm8UXKcRFHXotYTQt0X80UOXlLG96qKFuXrup+1pO6q7qtXVX9poRf25k1Lx10wMZDyNfv9JxUYEhD6WfKMQXqSM+VJ81pwgFdvkCQI2LOujpf61Z+PC6CR363fzLA+A5xJ4d8Hd9COUYCTJAwgJA9aR/GE5F9aUegIjZ2Nmauq0dKfKRyiuQJAtADo9kUDAfMBZw90y5px6lJ0SMv8ML7fj37a0J2g3ADgAuOe9PqwRvFkaCbD81UF9/bYk38rxhRFUhznzSW/jmDZtXJyn36f9CAJLPBffCOwfmLK67qrRw9MU1zpBTGLs7YXe91tlK1B5UAgTgDu7fj0OOw9EW8UWq3/ZlDV8ritTNHeGnd7R3vPXNzuDgkiCJz323/uSbSmzl1BrrQfmbnmnvSFDnAIDza+v9Nh0sSJKpn/LTE6Vq6l9wqPxcgXOCsI4qEGC9vXWXX7URuT0v+jveeHhbkj4GESCWDjJefFGwSAJSPevZc1X0xOv7dOHpiqgeHNJKPMHQC3bWn7BwBWU6FvW+fd3jO5Lzev6k+Jy4KCTI1AIRPfvNeYhUXm4pNskBD7HKYfJP8XrjszePMD3/7nW889jWBC0dSAcOt/HxRQqJeQYA1Z//6uVS3HAFOPpnxLrcqhBQWg0pHrO3fsRffCA9nyxqe2n6Q0AiOwDowR6LSGpm/abWKT7zAagoAAMICZOj1Z6Pm9clJ75bM+XhCbrm9NvglE2jUFGN7l7xfQB3A0DNeb85PVw54w5jxYcYBilAsqDO12/ZmLzk45qpj0zRw6bcCl3WRMzlCoAeMrV7RGPzUula+cPWJL3VL5feD0QQp3ZOy0KKjLiZImVhMYBYH7AGIEBUrIhYn0yRmpOdcOVN9XMbf9T628aFAPkDCB/kWaoa/67OOe6SezlSNwc6BPEBSA4QARAmIaecwnwuRevOjU7/3W11O9+7vS1JT/5JgCkvw/AZz5yP4sZ7EasZAwFgLcT6AXXgsCPKGUkKI3Wk+uv15R8+svv979+0pzWx+9BgamYk55n6M342Uapn/Ixjo063DIixEOMDYgByACdSBKXPUrHhZ9Vf9sn1mU3PXduRoA8BYSAPpgUgAKLDIwolXH4RKB9pBBAH6NtnEvUzXpgrQ8/4NwqVhm0uB1YuPBXNH3gS4pcrxS24QMynWQtJIfr2rfqr+hmvXU9DTvkFwmVsPQOIH8wdKi4lXflVOOVza2cu+c6WBP0QcVFBbkJKaqdcFqGqxAuq7MTpNuNBsj0+CfUnkxIEL5/EZMWCLKmCqCo79X/Vz10zGe//7dzWVvS7d0KCTNXUn5+pay9+kiPVlTabtuL3CoEIBBqY0/oQS9YIBJHqUVwzK1k387U72pJ05+eAiQ4fTo8diGpmvnQTl0/9CakCMrm0T7AEEEREAiGI4HlkPVghxWrIuGuKJ/3jxHB4xMUdaxdu2g9MzcJIsB114X/MMkUnJik8tMAfmDOwsIBAZAnGsNic9YUsF448NTzy0tfqItHT217HpgM9E0MZ4+0xoAggVgCC8ckqsy8uJY03ki7RJtPrB/ZynP4sInAf4hnPN2J8AxgF0rB+X1YVjL8dQyfPtyoMyfT4BGIQBftmjBgjhjjKTuXZf183K7WtLUmPMeJgiA2pyoXP6tITp5u+Pg/WE4LSQiQgTaRjTDrGYE0gEiIoWF/8dF+WykfPpIm3PQ6QbZy/TCMBqZlyz/FO9ewXVKi6MlBCmIhVYC8yCB4LIgMBg0hLrscaIV9VnbNw+AWpbyBJ5jMSYOnnFI89iIKQXDtzyZVuxTn3iITE5nosISg+SEWUCsW0CsU06agSEEBQBMsmnc6povrx7rhvP1Vff00Y8QUBhQ4hJCBjzrqzysTqX5TQ0AKT2ecHczJIxRSHYlqFopqcmAIRACgiODbT63GstkINPfeXyP+wnyFsjgBSwQMFQIsYl0on3wKnVEuu14IYIDIi5EN4AEm+EH36HiuIKGIddapnzrdwrPhZn9jVYJcBthCxICIi1rA5WMsWRaPvGdr44ypGkszwma99j8vGnOdn0zkickAgAaxyo4okC0lv2yR9rVvJ9ILdqAIpErFCynWldw98v/M5gFCwtlEAIl1z4b9wrKbY5Hp8ItbBKbaWnCgrN6JZRRTriGI3qqFcErGWSDOZnDLGN1Qy7v7asx8djyTsoaqG++9vKiCCEEFEmo8hF9bMSMZt3eQHj+Pikx4yUBY2BxAzwJadqJLM9na7d90zZvfq30hP23rluAx2CQIQyDWZXk+VNEw047/5t8FhAAMkaAatqfyg0+7deDOZDEiHAFLCTkQhs22L7P74WW/Xil/L3g3LmF0SUsGxI3b8bNqXwvqmqnOevhgJsgcdsAMKXgJDwFbEM3CirEIRzU40rMLQDIkONI2UygeIgYkAdmCtNcyaVSimYfYAXpdhpRU5MQ68HgBiFtMnHBk2NFx5+re4buavqlA6/kabM5asdYKIwVY5Dtu9HydNx+Ip7pM1Y7K/GTGaOpaegt2rf0ImYzlUwIy0zW195S+3PD/9l2PjK91UivzamUsu58Ljp9ps2idSOu8+rHJjjPSWT0zHO3fltr9wuXS+eaXsW3c//O5edmIMMRakSfyscHiIwpDGOwESrP5UU5G4AoDZUwunb193YfLaa5vCRAm7ZEnTsWn1xBcEeV7N2X/DsaEx8bMWRAwoS5rYdLf8aPeqO8a1PXXC3M2/HXeZfap+Ana8PR9mXw7KEYgREGmby1kqGPWNYU2/HBGE5+YgHI1dJG2Lp92b7Xz7RqVcTTYjdtd7t6mWm09q/e3oOVufO/nKtqdHTTa73r5ZwUCgbAAMAViJWzjmUgBA56c2CYUKQeCDI701YCemkNu523av/SV61t5iujbfzfvWv/8p8g5hNmuEdURJbucuu2vZjZltT0/o2/boWK/91XnSs2EV3AhBxOZxRyIQFa66WCM0bj6HykvESxsQMwSWQiH2dv6fH219/uxbBy2RxZJLPwBwS81Zi15zas98wO9ee/v21LzHmppEp8YGTSuODb/RAgJYAhgQscqNsuxe8Vjm7Rk3dHR09A6a89c1U+55SNVd8jQiw0eK12uJSNtcVjhccVFt0yMNW5K0vr+DP8BZcC5T2RC67N6FsbrrL7vk6mnTn1on0qSJUkfdOGvc0MItLZO84RN/UA237Arr+UKAEsAoN6RM1/t/v/nZSd8Z/M4WII2Xpj5Ud/5z3TzsvCcMKyERJdY3KjIkrIrHXA3gLjQtYKQSFgmyTU2iU6/QfbXnLw6zNdvaXrvwsQOj1eaXzvrH4Rd/MEuVTZhls70GAIuAxI2NAwAshckn28jiEEyTWEtujO2etctz25++tOOd7246OAc8RNkvVqBDguyOrswnD0/vbLl95aBfPx427KupcNNPl0uoohp+1oLA1noQjozR5JR9FWIlKCdh2I0ou2/T21ufP/vW+CJRyWQSSM6zA4n0atDWJL3QUDZ53Kaud/civkilkgssUgk7bMrPR8ApPlV8Lx97xZAbVWbPmvc3P3PyNQDbxvnLnJbuxjwoVqmtyZNWDGPMCY249h1SsTBsTkSMUaEyjcKxMwGsb1q6gFODKiBjidGVMUWlmHzaJPPW+uUXXUP0wosicUWUtEeTiKdHNhJaAK4++2wKD40aL22IwMQu2772tLf9jWTtjGcaMpkeYifYBLEeuaqacz0fvOfExnzMRaPGWC9tiUAQiFbl5wC4C9NgkQrWSaXIoFn0lgT9sD8S1Y35XqUZPrmOIuXjtK44CexOsBwdb/0cQMSQoNhhdkL5sCJotofODwMwkGQ6dqXX/PgrO9c8uL1xvjgtayFN04AUYLH6cKwfG6W0zu1ddXdny+0rMUtCmLLAQwJomLXAWf8yddb1/c0jHK36rjEwBGKyPuAUOVpIj4f1KMiLyCcQqLftIUAo+YMWRss8b2ClRL68bxZen6C9+QoiSIqTCYSKG04it9QVP2cDf8sg68Hu+fAuEFmc+nOn5cFJ3iDZzdj4h+7q5Ekf1lac86QuG3+Nzfh+P4vAKtR42J1XrGyPl4uGZMiIenph88oLvk+UvDsf6YmOEEy5fcG5tk50kmISEgiICNYHOBp2Rl7xFgBE8yilgU+CGnIKCTkQkwERMUSsWBB0pA5Af5WVF4kECfJrZ73YpMINV1onMllIj9K6sIicWNC0sgCMAWwOeVWkP5J8Vhejv5hRWmu/u/VXO9c8uL2xUZyWB8kLQDzIIwGAdvPeTPL5mFI2s1vU3vWL8x0Brz8S1KSnmfUQ0qEVK/tr1sEltBa3jCE2+DORMl4PlFO4DCDBV8Sg5RBCJ8gGlUi+DO1cGogTrRrCrGAJlgQEpZXN7d1nQntfhwihZb4P3LDfVKs7d1igmbXJvArBNRIU2AQAvgpXAECq4tCgYIIyGRHirK09Pvy/O9ZceOZbayqvwJzhvaAEjswzrcsf9kh5QLL0m0oAdokopPtnIwz+DGBLYgU2nztABBYWKqwaGhqc9evXZ4FmAtgW188pKWn8wf2I1n2NnAjYAmI8WOv7yGV8kCWANRF9sZaLe4CWRES+BXk9SwChloKln2kD+ZRNEYAJ1vOs353LA2igkEnluSfjL6dDuUINGNCgIoCIQP5eFwBhdfLw5XXzAgraAYP9i8F+GwACxBre1WcHHeT9R8U0AaaJb1LGsfvtEwifz0kSxLJWyvYaQNTajo5OA/zLUWRJx/dnmwcbngjE7udsB9GAIxQLcgDJWVq/fr0HEBAfRw3vzwx5E/7hOS5tmGoyGSOZPhEISIW1ciMaBA0L2Gw3BJIjFXEhn3ceCiGDaDUCkRUPPju7ABJULDqyMM9sw8UnZI7Ueppy3T7ClRrWA0QMuzGd49DpAJZhw0gOePfD0fx5NrtimgCAzW3eqcyJkIAbIljPko6WIDx0NJrlbSxdwEjtf5OscUMLt2CSIVp2qigAvki/v1XGbgaApk5Q6lCcpIjPRTqU7uG9GzfiL8f92UuLAOCGG44SRy8DsH3tAVeXhzQx4KeNtd3txBT8QoPxM3gPA98kIgaIsMpu+wiANDVbnUqQ781+7w5V0jDVS6ezBAkJiSgdI0l37jSZ3nfJT6+UXM8am/lkuSoefSUXT7zd5tL+EV/3EUB8T+HohrCj7ZEDyfrLwc5pYjwhWLbWgiN13wTwT1g+xUPTEo3UtABM8SRjbFyQIFPf2DymtYXWBHnSgiBq7ln7e1s8OQO3NEiaYYXdKFTpuG8jQW82zhfVUjFOIRkPBG1s0S3LT/OGDBldyNGqq6wxQdVDZCEgMT3vBm516QFspBVYGBSHQvt244OPVsjXplyweNUfUrm57asCOPR2LUORJSEi6s9pSIxtfeii4p6VH3WUjAhF2l73lQpJ4IQryCur43BpgWlNJTIAVO3pf+2q7ctFtW4VQJBKsF8+Nl4goWHfMJ6xJOIIwygVYdP14ctO25PXtq5IdA6Wp37uqr9CvwRHc1+H1ed7IqWPWZNAk+l+FHTcZAsIEbN4GcuxmhOHz13x8ObfTrgOqemfJsf5krFm1pKrqezEX9SWn/vjLQn6XlOT6FTFAtqSpK01VRe9q6PlZ0kuawmsTC5jVdEJV9bOePnNlgfp/v1Wb4EHwIlNTf6KCqqrJNdnQMRgh212V1q6ViwOAvS0/bxiWDOh1FU7N3j/9sQjI+d/O/GzHlnyh5X/5Z07LEDwd7+7xCk5qZvCQ0pgcgLrCYdKXaq94r7VT91xPoB9+2dKAmwJvtXNfufHfq7r4y2LL3hgwFvHkwpJMdGqecfDLS63xs+/ySR+H5ne39+8ecXCztq4RABgS5LTIyfcUmFCQy8RzxcSUZ91m0CsR6CjI/iVCkFAsMfgUpXObVv8uHLK7+DI8DLx+yyI2Hppo4vHXzU8vnEUetb/xNm76q2sl7EUGT0JZcdfp2MnzLHEVg8b+t3q81/i1O/o9sb54rQAhnrW3UOFDWcLlCAQk6xoqyqm3Vd3ybpJ0rfuFz2bX22NlI0Ch46fqkrG3EIFwyfZbJ8FkRKxvnIcLb2dj7e9+fVt8bioZL7nlkwGQnf3uZReKXePmPDy9wFg0aK4ounJP+jydapimsTjViWTtKuu8vxHVMGwm3w/6xMpbXK9louOP6v+0g1vyL6PFuj1D7++YUNyDwBUj/nWED5u9lmIjPofXNIw1Ul39VRO+Wmq/R3+aPAdJRs5LsYcAlkbJDICAyes4JScCcjaLUlKA0DdmJurvBP+++McriizuV5LxIx8b2//KiXIX/u2vTk0UvtVQNCfHH9h96Lgwz9GLUu97b3v7aorHp/gwuH3+VblSIwLkDJe2nB0xBQK1//aLzo5rWBBTmmEtAubSwvEkGXXD1Wd/526uS09LQ/SXU3NolMJerpuzgev8JAJM0y6zyNiB+KTFRZV1HCtRKqvLSw8OU3kgkJDIsIEkw0MFrRRIsr2bt/ntb2yECKUpAUDms6blzQAMGZK+HdA8uX+XhtR8pjcFEjmWzLZp2+9OxKuupwjNZXi9RgipSTbZ6nguEaK1Dznl0xsr5v4w3aI1dCRYRwaWg7WMJl0TrllBW71ub9qxKlntIyNm/4Nl70r9qBwFIQjIDEALIsR0aWn3zd8dsuplOlql2jFMISGzONwTYX1+jsDn73R1u+/wfFfe9mU43FRba/Ovt/f9cGjOhxyBezlKXAluV5rTdbAKY3AGRIRscbm+kyQOLCIWAtHgXw+fvA9Gdq2+Fr0bN2owlFHxHgBy2HJ5vqMCAtCwyLilkSMyRjJDYDIJxUiZfpI9nzw59tbbm7DvORh7vUkjUgz9/fbjp05SLA6SR0rftSJ7hVXwNslpGNKxPogYsn1WrHWUqiykmL1p1DBcSdRaFi59T1rvT5DsI7J9WX00NGNOy685++QINvUGSeIUNHOl9bC27eRVUiC+yJMsB7BKY6qoad+i2vOu1OVTfg23GEVYjJgFdKQz1eNiI9a/y+UR31RIPWfws3PnvLfcp3Lfq1DYYecaL5aIwCWYbICkxVYqyBBB5adKKtQ2DUdLf/a+vzE69EsnEqQwQJQ63u3tee2JC+w+1o/1pGYI+QQABPUqZZgMgKTFRLbX42ICsU0+3us2bH06s2LL3gmIDkPf1uSKGGPXF2xwSbCDHw/EIjJeQbxRWrTqxem/G1LLhe/u0dFYlpAIkQCMSR+n4jXa8XrteL3WcDm+bwoqUg07HVvXAev6ylAKJVaYDFtqVq9Opnzez76gVLggBswgfwmJzbT55tsr2cy6Qw5GuR1ddldLW+Q4xgR8fKVc17mg7AvJGIAm9etX6/PAEme9+vtbq0AkaFP5zd0qDUO4FsGyTPwcJ5pFYj4W5877UrT/sZ8ZDtaWYcVOdGgs02awIqgXJATZXYiTLkd6/3tS77e9vyk6yAieXIy+GwW3vbmX6/dt/x/TjZdq37Gtq+PnagiJxIYkRWBNUGHidwYMwmhp+1Van32jLZXZj/2x7jYJkaYdIFm7SrSUU06pslRygof3LlMzjOIi9qaiiftpifOsN3rXmXyoZyogo4EspNisGaoCJMTY3aiLLkdndK9YmHPa/HT2n435408e2uRmu4jvkhtfXnmg/6OZXcz+QpuLLAFKQIrzTrqqFAkLL1bN5muN6bBoVdVRCvWUYedqMMOFBEVHlx4uZrcqGInotmJKXYimpywsuJ/fiPbIsQOFOmIy05Us+MqYjcqRtHhcQSXHSjWkRA7UdX/6IHSg4jQLNyWoIfqxl/1pK27+RoVqZxjWZ8KihQRAOvvyRJ577LX/YSz6o5HN61/OWiT0AFVRYIsmpu5O5HY070h+a2acx7+J106+Wpw8QwBjRMdVWSyENOzU9nsUuR2/POmF5oWH3gP+JiMBQsEiQTEdvfY3nUvkC4mgREIQZRDKrM1KLvHHuiZgtbPliR9COD8+guXTpdw9XUCZyaraIXRIbCfAyS7A356hfX3PNu37bEnd7bcs32/u96DwRnY9/t15z3/phQ13AqOnUG60BHJEkzPRsl0PZFeef+9O1r/tX3kV14bT729Dyivx0JAZGLk927e10+gYWxAV5C3q910ffRi4C19ssSiSCicbu8I9Fp1sGeaNs0iBSi2H+Z2b3hRvIwlCFlSRLY3F/Z+n84bT4DEfu+4fnq1pHsegJ+2IsIBe0D4T8kMp0XdXchyAAAAAElFTkSuQmCC" alt="CoLearn" style="height:28px;display:block;" />
+  </a>
+  <span class="badge-agent">⚡ Agent Portal</span>
+</header>
+
+<div class="container">
+  <div class="page-badge">🔗 Generate Magic Link</div>
+  <h1 class="page-title">Buat Link Ubah Jadwal<br>untuk Murid</h1>
+  <p class="page-desc">Masukkan nomor HP murid → sistem auto-fetch data → generate link khusus untuk dikirim ke murid via WhatsApp.</p>
+
+  <div class="card">
+    <div class="card-title">Cari Data Murid</div>
+    <label for="hp">Nomor HP Murid</label>
+    <div class="input-wrap">
+      <span class="input-prefix">+62</span>
+      <input type="tel" id="hp" placeholder="Contoh: 81234567890" autocomplete="off" />
+    </div>
+    <div class="error-msg" id="err-hp">Masukkan nomor HP yang valid (minimal 8 digit).</div>
+    <button class="btn-lookup" id="btnLookup" onclick="lookupMurid()">
+      <span id="lookupText">🔍 Cari Data Murid</span>
+      <div class="spinner" id="lookupSpinner"></div>
+    </button>
+    <div class="murid-card" id="muridCard">
+      <div class="murid-name" id="muridName"></div>
+      <div class="murid-meta" id="muridMeta"></div>
+    </div>
+    <div class="not-found" id="notFound">
+      ❌ Data murid tidak ditemukan. Pastikan nomor HP sudah benar dan terdaftar di sistem CoLearn.
+    </div>
+  </div>
+
+  <div class="card" id="cardGenerate" style="display:none">
+    <div class="card-title">Generate Magic Link</div>
+    <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;line-height:1.6">
+      Link ini berisi data murid yang sudah terkunci. Murid hanya perlu memilih jadwal baru dan mengisi alasan.
+    </p>
+    <button class="btn-generate" id="btnGenerate" onclick="generateLink()">
+      <span id="generateText">✨ Generate Link Sekarang</span>
+      <div class="spinner" id="generateSpinner"></div>
+    </button>
+    <div class="result-box" id="resultBox">
+      <div class="result-label">✅ Magic Link Siap Dikirim!</div>
+      <div class="link-display" id="linkDisplay"></div>
+      <div class="btn-row">
+        <button class="btn-copy" id="btnCopy" onclick="copyLink()">📋 Copy Link</button>
+        <a class="btn-wa-send" id="btnWa" href="#" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Kirim via WA
+        </a>
+      </div>
+      <div class="expiry-note">⏱ Link berlaku 48 jam</div>
+    </div>
+    <button class="btn-reset" onclick="resetAll()">← Cari murid lain</button>
+  </div>
+</div>
+
+<script>
+  const BASE_URL = 'https://perubahan-jadwal-colearn.vercel.app';
+  let currentMurid = null;
+  let currentLink = null;
+
+  function normalizeHP(hp) {
+    hp = String(hp).trim().replace(/[\s\-\+]/g, '');
+    if (hp.startsWith('62')) hp = hp.slice(2);
+    if (hp.startsWith('0')) hp = hp.slice(1);
+    return hp;
+  }
+
+  async function lookupMurid() {
+    const hp = normalizeHP(document.getElementById('hp').value);
+    document.getElementById('muridCard').classList.remove('show');
+    document.getElementById('notFound').classList.remove('show');
+    document.getElementById('cardGenerate').style.display = 'none';
+    document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('err-hp').style.display = 'none';
+
+    if (!hp || hp.length < 8) {
+      document.getElementById('err-hp').style.display = 'block';
+      return;
+    }
+
+    setLoading('lookup', true);
+    try {
+      const res = await fetch(`/api/lookup?hp=${encodeURIComponent(hp)}`);
+      const data = await res.json();
+      if (data.status === 'found') {
+        currentMurid = data.data;
+        document.getElementById('muridName').textContent = data.data.name;
+        document.getElementById('muridMeta').textContent = `Kelas ${data.data.grade} · +62${normalizeHP(data.data.phone_number)}`;
+        document.getElementById('muridCard').classList.add('show');
+        document.getElementById('cardGenerate').style.display = 'block';
+      } else {
+        document.getElementById('notFound').classList.add('show');
+        currentMurid = null;
+      }
+    } catch (err) {
+      document.getElementById('notFound').textContent = '⚠️ Gagal menghubungi server. Coba lagi.';
+      document.getElementById('notFound').classList.add('show');
+    }
+    setLoading('lookup', false);
+  }
+
+  async function generateLink() {
+    if (!currentMurid) return;
+    document.getElementById('resultBox').classList.remove('show');
+    setLoading('generate', true);
+    try {
+      const hp = normalizeHP(currentMurid.phone_number);
+      const res = await fetch(`/api/generate-token?hp=${encodeURIComponent(hp)}`);
+      const data = await res.json();
+      if (data.status === 'ok') {
+        currentLink = `${BASE_URL}/form?token=${data.token}`;
+        document.getElementById('linkDisplay').textContent = currentLink;
+        const msg = `Halo ${currentMurid.name}! 👋%0A%0AKakak Siaga CoLearn di sini.%0A%0ASilakan klik link berikut untuk mengajukan perubahan jadwal belajarmu:%0A%0A${currentLink}%0A%0ALink berlaku 48 jam. Segera selesaikan ya! 😊%0A%0ASalam,%0AKakak Siaga CoLearn`;
+        const waHp = '62' + normalizeHP(currentMurid.phone_number);
+        document.getElementById('btnWa').href = `https://wa.me/${waHp}?text=${msg}`;
+        document.getElementById('resultBox').classList.add('show');
+      } else {
+        alert('Gagal generate link. Data murid tidak ditemukan.');
+      }
+    } catch (err) {
+      alert('Gagal menghubungi server. Coba lagi.');
+    }
+    setLoading('generate', false);
+  }
+
+  function copyLink() {
+    if (!currentLink) return;
+    navigator.clipboard.writeText(currentLink).then(() => {
+      const btn = document.getElementById('btnCopy');
+      btn.textContent = '✅ Tersalin!';
+      setTimeout(() => { btn.textContent = '📋 Copy Link'; }, 2000);
+    });
+  }
+
+  function resetAll() {
+    currentMurid = null; currentLink = null;
+    document.getElementById('hp').value = '';
+    document.getElementById('muridCard').classList.remove('show');
+    document.getElementById('notFound').classList.remove('show');
+    document.getElementById('cardGenerate').style.display = 'none';
+    document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('hp').focus();
+  }
+
+  function setLoading(type, isLoading) {
+    if (type === 'lookup') {
+      document.getElementById('lookupText').style.display = isLoading ? 'none' : 'inline';
+      document.getElementById('lookupSpinner').style.display = isLoading ? 'block' : 'none';
+      document.getElementById('btnLookup').disabled = isLoading;
+    } else {
+      document.getElementById('generateText').style.display = isLoading ? 'none' : 'inline';
+      document.getElementById('generateSpinner').style.display = isLoading ? 'block' : 'none';
+      document.getElementById('btnGenerate').disabled = isLoading;
+    }
+  }
+
+  document.getElementById('hp').addEventListener('keydown', e => { if (e.key === 'Enter') lookupMurid(); });
+</script>
+</body>
+</html>
