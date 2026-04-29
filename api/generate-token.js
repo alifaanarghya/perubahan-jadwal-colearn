@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { hp } = req.query;
+  const { hp, agent_name } = req.query;
   if (!hp) return res.status(400).json({ status: 'error', message: 'hp required' });
 
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSUQ1OHVwDCvtyPd1xDSEdzvzq2qWA_L8e2SC8LzMZxpj4mvumw_0I5ZN8RKM7rXB7/exec';
