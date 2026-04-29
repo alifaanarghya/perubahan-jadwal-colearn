@@ -235,7 +235,7 @@
       const data = await res.json();
 
       if (data.status === 'expired') {
-        showError('Link Sudah Kadaluarsa', 'Link ini sudah tidak berlaku (lebih dari 48 jam). Silakan hubungi Kakak Siaga CoLearn untuk mendapatkan link baru.');
+        showError('Link Sudah Kadaluarsa', 'Link ini sudah tidak berlaku (lebih dari 24 jam). Silakan hubungi Kakak Siaga CoLearn untuk mendapatkan link baru.');
         return;
       }
 
