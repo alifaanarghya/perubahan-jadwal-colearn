@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { hp } = req.query;
   if (!hp) return res.status(400).json({ status: 'error', message: 'hp required' });
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSUQ1OHVwDCvtyPd1xDSEdzvzq2qWA_L8e2SC8LzMZxpj4mvumw_0I5ZN8RKM7rXB7/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYS50EywVNt54mzyN6j0ygYTEcFDwFjkyEJe1iE8uR0nefVNKZXc79znu8pJHLlmwM/exec';
   try {
     const url = `${APPS_SCRIPT_URL}?action=lookup&hp=${encodeURIComponent(hp)}`;
     const response = await fetch(url, { redirect: 'follow' });
