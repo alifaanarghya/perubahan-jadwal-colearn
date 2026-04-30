@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { token } = req.query;
   if (!token) return res.status(400).json({ status: 'error', message: 'token required' });
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYS50EywVNt54mzyN6j0ygYTEcFDwFjkyEJe1iE8uR0nefVNKZXc79znu8pJHLlmwM/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynpgrowPeYTUsxiMJ5QU_6aoxpqPH5FfNPlOucRlEfk0JvCuHptt7EY0uCcSFHBEx2/exec';
   try {
     const url = `${APPS_SCRIPT_URL}?action=get_token&token=${encodeURIComponent(token)}`;
     const response = await fetch(url, { redirect: 'follow' });
