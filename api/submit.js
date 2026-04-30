@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbzYS50EywVNt54mzyN6j0ygYTEcFDwFjkyEJe1iE8uR0nefVNKZXc79znu8pJHLlmwM/exec';
+const APPS_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbynpgrowPeYTUsxiMJ5QU_6aoxpqPH5FfNPlOucRlEfk0JvCuHptt7EY0uCcSFHBEx2/exec';
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
 async function sendSlackNotif(body, jadwalBaru, jadwalSlots) {
